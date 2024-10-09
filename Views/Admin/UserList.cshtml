@@ -1,0 +1,62 @@
+﻿
+
+@model IEnumerable<UserViewModel>
+
+<h2>Användarhantering</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach(var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+           <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Roller</th>
+            <th>Åtgärder</th>
+
+        </tr>
+    </thead>
+
+
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @foreach (var role in user.Roles)
+                    {
+                        <span>@role</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="AddUserToRole" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        <select name="role" class="form-control">
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Lägg till roll</button>
+                    </form>
+                    
+                    <form asp-action="RemoveUserFromRole" method="post" style="margin-top:10px">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        <select name="role" class="form-control">
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+
+                        </select>
+                        <button type="submit" class="btn btn-danger">Ta bort roll</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
